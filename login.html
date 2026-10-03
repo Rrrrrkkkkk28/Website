@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Masuk Portal Guru — Az-Zikra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main class="auth-page">
+  <div class="card auth-card">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">ذ</span>
+      <span>Az-Zikra<small>Portal Guru</small></span>
+    </a>
+    <h2 style="text-align:center;font-size:1.3rem">Assalamu'alaikum 👋</h2>
+    <p class="muted small" style="text-align:center">Masuk untuk mengelola absensi, laporan, dan rapor siswa.</p>
+
+    <div id="login-error" class="alert alert-error hidden"></div>
+
+    <form id="login-form" autocomplete="on">
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" required autocomplete="username" placeholder="mis. ahmad">
+      </div>
+      <div class="field">
+        <label for="password">Kata sandi</label>
+        <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="••••••">
+      </div>
+      <button class="btn" style="width:100%" type="submit">Masuk</button>
+    </form>
+
+    <div class="demo-accounts">
+      <strong>Akun demo</strong><br>
+      Guru: <code>ahmad</code> / <code>guru123</code> (juga <code>siti</code>, <code>rizki</code>, <code>nur</code>, <code>hasan</code>)<br>
+      Koordinator: <code>admin</code> / <code>admin123</code>
+    </div>
+    <p style="text-align:center;margin:1.25rem 0 0" class="small"><a href="index.html">← Kembali ke beranda</a></p>
+  </div>
+</main>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/store.js"></script>
+<script>
+  if (Auth.current()) location.replace('portal.html');
+  $('#login-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const user = Auth.login($('#username').value, $('#password').value);
+    if (user) {
+      location.href = 'portal.html';
+    } else {
+      const box = $('#login-error');
+      box.textContent = 'Username atau kata sandi salah.';
+      box.classList.remove('hidden');
+    }
+  });
+</script>
+</body>
+</html>

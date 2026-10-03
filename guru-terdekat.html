@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guru Terdekat — Az-Zikra</title>
+  <meta name="description" content="Temukan guru les Az-Zikra terdekat dari lokasi Anda secara langsung.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">ذ</span>
+      <span>Az-Zikra<small>Bimbingan Belajar &amp; Mengaji</small></span>
+    </a>
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="index.html#program">Program</a></li>
+      <li><a href="guru-terdekat.html">Guru Terdekat</a></li>
+      <li><a href="login.html" class="btn btn-sm">Masuk Portal</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="nearby-page">
+  <aside class="nearby-side">
+    <h1>📍 Guru Les Terdekat</h1>
+    <p class="muted small" style="margin:0">Posisi guru diperbarui langsung dari portal guru. Izinkan akses lokasi agar daftar diurutkan dari yang terdekat.</p>
+
+    <div id="loc-status" class="loc-status">⏳ Mencari lokasi Anda…</div>
+
+    <div class="filters" id="filters"></div>
+
+    <label class="switch small" style="margin-bottom:1rem">
+      <input type="checkbox" id="only-live">
+      <span class="track"></span>
+      Hanya guru yang sedang online
+    </label>
+
+    <div class="teacher-list" id="teacher-list"></div>
+  </aside>
+  <div class="map-wrap"><div id="nearby-map"></div></div>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/nearby.js"></script>
+</body>
+</html>
