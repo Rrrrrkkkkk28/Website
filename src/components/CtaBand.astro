@@ -1,0 +1,17 @@
+---
+import WaIcon from './WaIcon.astro';
+import { site, waLink } from '../data/site.js';
+const { title = 'Mesin pendingin bermasalah hari ini?', text = 'Kirim foto atau video mesinnya lewat WhatsApp. Teknisi kami bantu cek penyebabnya dan jadwalkan kunjungan.' } = Astro.props;
+---
+<section class="bg-ft text-white">
+  <div class="wrap py-14 sm:py-16 grid gap-8 md:grid-cols-[1.5fr_auto] md:items-end">
+    <div>
+      <h2 class="text-[2.4rem] sm:text-[3.2rem]">{title}</h2>
+      <p class="mt-4 max-w-xl text-white/85">{text}</p>
+    </div>
+    <div class="flex flex-col gap-2 md:items-end">
+      <a href={waLink()} class="btn btn-signal text-[1.05rem]" target="_blank" rel="noopener"><WaIcon />Chat {site.waDisplay}</a>
+      <a href={`mailto:${site.email}`} class="text-sm text-white/80 underline underline-offset-4 hover:text-white">atau kirim email ke {site.email}</a>
+    </div>
+  </div>
+</section>

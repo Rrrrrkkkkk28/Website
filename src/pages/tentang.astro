@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../data/site.js';
+
+const areas = ['Jombang', 'Mojokerto', 'Kediri', 'Nganjuk', 'Surabaya', 'Sidoarjo'];
+const reasons = [
+  { t: 'Workshop sendiri', d: 'Rangka, dudukan unit, dan komponen fabrikasi dikerjakan di Glagahan. Tidak menunggu pihak lain, jadi jadwal lebih bisa dipegang.' },
+  { t: 'Satu tim untuk semua mesin', d: 'AC, chiller, mesin es, dan cold storage ditangani teknisi yang sama. Anda cukup menghubungi satu nomor.' },
+  { t: 'Penawaran tertulis sebelum mulai', d: 'Rincian pekerjaan, komponen, dan biaya disepakati di awal. Tidak ada tagihan tambahan yang tiba-tiba muncul.' },
+  { t: 'Laporan setiap kunjungan', d: 'Kondisi mesin, tekanan, suhu, dan komponen yang perlu diganti dicatat, sehingga Anda bisa merencanakan anggaran perawatan.' },
+];
+---
+<Base title="Tentang" description="CV Fabian Teknik berdiri sejak 2021 di Glagahan, Perak, Jombang. Spesialis maintenance dan service sistem pendingin.">
+  <PageHead title="Tim teknik pendingin dari Glagahan, Jombang" lead={`CV Fabian Teknik berdiri sejak ${site.since} sebagai spesialis maintenance dan service sistem pendingin. Kami mulai dari perawatan AC, lalu berkembang menangani water chiller, mesin ice making, dan cold storage untuk usaha dan industri.`} />
+
+  <section class="wrap py-14 sm:py-18 grid gap-12 lg:grid-cols-[1fr_1.2fr]">
+    <div>
+      <div class="photo-slot aspect-[4/3] rounded-md flex items-end p-4">
+        <span class="text-sm text-steel bg-white/80 px-2.5 py-1 rounded">Foto kantor dan workshop</span>
+      </div>
+      <dl class="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6">
+        <div><dt class="text-sm text-steel">Berdiri</dt><dd class="temp text-[2.6rem] leading-none mt-1">{site.since}</dd></div>
+        <div><dt class="text-sm text-steel">Bentuk usaha</dt><dd class="temp text-[2.6rem] leading-none mt-1">CV</dd></div>
+      </dl>
+    </div>
+    <div>
+      <h2 class="text-[2.3rem] sm:text-[2.8rem]">Kenapa usaha memilih kami</h2>
+      <dl class="mt-8 space-y-7">
+        {reasons.map((r) => (
+          <div class="border-l-4 border-ft pl-5">
+            <dt class="font-bold text-[1.12rem]">{r.t}</dt>
+            <dd class="text-steel mt-1">{r.d}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="bg-white border-y border-line">
+    <div class="wrap py-14 sm:py-18 grid gap-10 lg:grid-cols-2">
+      <div>
+        <h2 class="text-[2.3rem] sm:text-[2.8rem]">Area layanan</h2>
+        <p class="mt-4 text-steel max-w-md">Berangkat dari Perak, Jombang. Untuk lokasi di luar daftar ini, hubungi kami dulu untuk cek jadwal.</p>
+        <ul class="mt-6 flex flex-wrap gap-2.5">
+          {areas.map((a) => <li class="px-4 py-2.5 bg-frost border border-line rounded-full font-semibold">{a}</li>)}
+        </ul>
+      </div>
+      <div class="bg-night text-ice rounded-md p-7 self-start">
+        <h2 class="text-white text-[1.8rem] [font-stretch:78%]">Untuk pendaftaran vendor</h2>
+        <p class="mt-3 text-ice/75">Company profile dan dokumen legalitas perusahaan tersedia untuk keperluan pengadaan dan tender. Minta lewat email, kami kirim di hari yang sama.</p>
+        <a href={`mailto:${site.email}?subject=Permintaan%20company%20profile%20CV%20Fabian%20Teknik`} class="btn btn-signal mt-6">Minta company profile</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>

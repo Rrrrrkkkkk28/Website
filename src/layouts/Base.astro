@@ -1,0 +1,111 @@
+---
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+import WaIcon from '../components/WaIcon.astro';
+import { site, waLink } from '../data/site.js';
+
+const { title, description = 'CV Fabian Teknik, Jombang. Instalasi, perawatan, dan perbaikan AC, water chiller, cold storage, dan mesin ice making untuk pabrik dan usaha di Jawa Timur.' } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const nav = [
+  { href: '/layanan', label: 'Layanan' },
+  { href: '/proyek', label: 'Proyek' },
+  { href: '/tentang', label: 'Tentang' },
+  { href: '/kontak', label: 'Kontak' },
+];
+const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | Spesialis Mesin Pendingin di Jombang`;
+---
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta name="theme-color" content="#0A2639" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'HVACBusiness',
+    name: site.name,
+    telephone: '+' + site.wa,
+    email: site.email,
+    foundingDate: String(site.since),
+    address: { '@type': 'PostalAddress', streetAddress: 'Plosoduwur, Glagahan', addressLocality: 'Perak', addressRegion: 'Jawa Timur', addressCountry: 'ID' },
+    areaServed: ['Jombang', 'Mojokerto', 'Kediri', 'Nganjuk', 'Surabaya'],
+  })} />
+</head>
+<body class="min-h-screen flex flex-col">
+  <a href="#isi" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 bg-white px-3 py-2">Langsung ke isi</a>
+
+  <header class="border-b border-line bg-frost/90 backdrop-blur sticky top-0 z-40">
+    <div class="wrap flex items-center justify-between gap-4 h-16">
+      <a href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Beranda CV Fabian Teknik">
+        <Logo size={36} />
+        <span class="leading-none">
+          <span class="block font-display font-extrabold text-[1.15rem] [font-stretch:75%]">CV Fabian Teknik</span>
+          <span class="block text-[.72rem] text-steel mt-0.5">Jombang, sejak {site.since}</span>
+        </span>
+      </a>
+      <nav class="hidden md:flex items-center gap-7 text-[.95rem] font-semibold" aria-label="Menu utama">
+        {nav.map((n) => (
+          <a href={n.href} class:list={['py-1 border-b-2 transition-colors', path === n.href ? 'border-ft text-ft' : 'border-transparent hover:border-line']} aria-current={path === n.href ? 'page' : undefined}>{n.label}</a>
+        ))}
+      </nav>
+      <a href={waLink()} class="btn btn-wa !py-2.5 !px-4 text-sm hidden sm:inline-flex" target="_blank" rel="noopener"><WaIcon size={18} />Chat WhatsApp</a>
+      <details class="md:hidden relative">
+        <summary class="list-none cursor-pointer p-2 -mr-2 font-semibold text-sm flex items-center gap-2" aria-label="Buka menu">
+          Menu
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="2"/></svg>
+        </summary>
+        <div class="absolute right-0 mt-2 w-56 bg-white border border-line rounded-md shadow-lg p-2 flex flex-col">
+          <a href="/" class="px-3 py-2.5 rounded hover:bg-frost">Beranda</a>
+          {nav.map((n) => <a href={n.href} class="px-3 py-2.5 rounded hover:bg-frost">{n.label}</a>)}
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <main id="isi" class="flex-1">
+    <slot />
+  </main>
+
+  <footer class="bg-night text-ice/80 text-[.95rem]">
+    <div class="wrap py-14 grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div>
+        <div class="flex items-center gap-3 text-white">
+          <Logo size={44} />
+          <span class="font-display font-extrabold text-2xl [font-stretch:75%]">CV Fabian Teknik</span>
+        </div>
+        <p class="mt-4 max-w-sm">Maintenance and service cooling system specialist. Air conditioning, water chiller, cold storage, dan ice making.</p>
+      </div>
+      <div>
+        <h2 class="text-white text-lg mb-3">Kantor dan workshop</h2>
+        <p>{site.address}</p>
+      </div>
+      <div>
+        <h2 class="text-white text-lg mb-3">Hubungi</h2>
+        <ul class="space-y-1.5">
+          <li><a class="hover:text-white underline-offset-4 hover:underline" href={waLink()} target="_blank" rel="noopener">WhatsApp {site.waDisplay}</a></li>
+          <li><a class="hover:text-white underline-offset-4 hover:underline break-all" href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li><a class="hover:text-white underline-offset-4 hover:underline" href={`https://instagram.com/${site.instagram}`} target="_blank" rel="noopener">Instagram @{site.instagram}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="wrap py-5 flex flex-col sm:flex-row gap-2 justify-between text-sm text-ice/55">
+        <span>&copy; {new Date().getFullYear()} CV Fabian Teknik</span>
+        <span>Website oleh <a href="https://ziradigital.id" class="hover:text-white underline underline-offset-4">Zira Digital</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <a href={waLink()} target="_blank" rel="noopener" class="fixed bottom-4 right-4 z-40 sm:hidden btn btn-wa !rounded-full shadow-lg shadow-night/30" aria-label="Chat WhatsApp Fabian Teknik">
+    <WaIcon size={22} /><span>Chat</span>
+  </a>
+</body>
+</html>

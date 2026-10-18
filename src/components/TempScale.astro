@@ -1,0 +1,93 @@
+---
+import { machines } from '../data/site.js';
+const TOP = 30, BOTTOM = -30;
+const pos = (t) => ((TOP - t) / (TOP - BOTTOM)) * 100;
+const ticks = [30, 20, 10, 0, -10, -20, -30];
+const fmt = (t) => (t < 0 ? '−' + Math.abs(t) : String(t));
+const target = -18;
+---
+<figure class="tscale relative bg-night text-ice rounded-lg p-5 sm:p-7 overflow-hidden" data-from={TOP} data-to={target} aria-label="Skala suhu kerja mesin yang ditangani Fabian Teknik, dari AC 24 derajat sampai cold storage minus 18 derajat">
+  <div class="flex items-end justify-between gap-4 border-b border-white/10 pb-4">
+    <div>
+      <p class="text-sm text-ice/60">Suhu ruang cold storage</p>
+      <p class="temp text-[3.6rem] sm:text-[4.4rem] leading-none text-white mt-1" aria-hidden="true"><span data-readout>{fmt(target)},0</span><span class="text-ice/50 text-[.55em] align-top ml-1">°C</span></p>
+    </div>
+    <p class="text-sm text-right pb-1.5" aria-live="polite"><span data-status class="inline-flex items-center gap-2"><span class="dot size-2 rounded-full bg-signal"></span><span data-status-text>Suhu kerja tercapai</span></span></p>
+  </div>
+
+  <div class="relative mt-6 h-[340px] sm:h-[400px] grid grid-cols-[2.6rem_1.1rem_1fr] gap-x-3">
+    <!-- Angka skala -->
+    <div class="relative text-[.8rem] text-ice/45 tabular-nums" aria-hidden="true">
+      {ticks.map((t) => (
+        <span class="absolute right-0 -translate-y-1/2" style={`top:${pos(t)}%`}>{fmt(t)}°</span>
+      ))}
+    </div>
+    <!-- Batang suhu: warna mengikuti suhu, dari hangat ke beku -->
+    <div class="relative rounded-full bar" aria-hidden="true">
+      {ticks.map((t) => (
+        <span class="absolute -left-1 -right-1 h-px bg-night/70" style={`top:${pos(t)}%`}></span>
+      ))}
+    </div>
+    <!-- Label mesin -->
+    <ol class="relative">
+      {machines.map((m) => (
+        <li class="marker absolute left-0 right-0 -translate-y-1/2 flex items-center gap-3" style={`top:${pos(m.temp)}%`} data-temp={m.temp}>
+          <span class="tick h-px w-5 bg-ice/30 shrink-0"></span>
+          <span class="leading-tight">
+            <span class="name block font-semibold text-[.98rem]">{m.name}</span>
+            <span class="block text-[.82rem] text-ice/50">{m.range}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
+    <!-- Penunjuk suhu saat ini -->
+    <div data-needle class="needle pointer-events-none absolute left-0 w-[calc(2.6rem+1.1rem+1.5rem+1.25rem)] h-0.5 bg-signal" style={`top:${pos(target)}%`} aria-hidden="true">
+      <span class="absolute -top-[5px] left-[2.6rem] ml-[.55rem] size-3 rounded-full bg-signal ring-4 ring-night"></span>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .bar {
+    background: linear-gradient(to bottom, #c9a46a 0%, #8fb3c9 40%, #4f9fd8 62%, #1d7fcf 82%, #0c5ea3 100%);
+  }
+  .needle { will-change: top; }
+  .marker .name { color: rgb(220 231 239 / .45); transition: color .4s; }
+  .marker .tick { transition: background-color .4s, width .4s; }
+  .marker.is-reached .name { color: #fff; }
+  .marker.is-reached .tick { background: var(--color-signal); }
+  .tscale[data-done] .dot { background: #4ad295; }
+  .tscale:not([data-done]) .dot { animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: .2; } }
+</style>
+
+<script>
+  const fmt = (v: number) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(1).replace('.', ',');
+  document.querySelectorAll<HTMLElement>('.tscale').forEach((el) => {
+    const from = Number(el.dataset.from), to = Number(el.dataset.to);
+    const readout = el.querySelector<HTMLElement>('[data-readout]')!;
+    const needle = el.querySelector<HTMLElement>('[data-needle]')!;
+    const statusText = el.querySelector<HTMLElement>('[data-status-text]')!;
+    const markers = [...el.querySelectorAll<HTMLElement>('.marker')];
+    const pos = (t: number) => ((30 - t) / 60) * 100;
+    const paint = (t: number) => {
+      readout.textContent = fmt(t);
+      needle.style.top = pos(t) + '%';
+      markers.forEach((m) => m.classList.toggle('is-reached', t <= Number(m.dataset.temp)));
+    };
+    const finish = () => { paint(to); el.dataset.done = ''; statusText.textContent = 'Suhu kerja tercapai'; };
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return finish();
+
+    statusText.textContent = 'Menurunkan suhu';
+    paint(from);
+    const dur = 2800, start = performance.now() + 350;
+    const ease = (x: number) => 1 - Math.pow(1 - x, 3);
+    const step = (now: number) => {
+      const p = Math.min(Math.max((now - start) / dur, 0), 1);
+      paint(from + (to - from) * ease(p));
+      p < 1 ? requestAnimationFrame(step) : finish();
+    };
+    requestAnimationFrame(step);
+  });
+</script>

@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import TempScale from '../components/TempScale.astro';
+import CtaBand from '../components/CtaBand.astro';
+import WaIcon from '../components/WaIcon.astro';
+import { machines, industries, work, waLink } from '../data/site.js';
+
+const steps = [
+  { t: 'Ceritakan masalahnya', d: 'Lewat WhatsApp atau telepon. Kirim foto mesin, merek, dan gejala yang muncul.' },
+  { t: 'Survei ke lokasi', d: 'Teknisi datang memeriksa mesin, kelistrikan, dan kondisi ruangan.' },
+  { t: 'Penawaran tertulis', d: 'Anda menerima rincian pekerjaan, komponen, biaya, dan lama pengerjaan sebelum mulai.' },
+  { t: 'Pengerjaan dan uji jalan', d: 'Mesin dikerjakan sampai suhu kerja tercapai, lalu diuji bersama tim Anda.' },
+  { t: 'Perawatan berkala', d: 'Kami jadwalkan kunjungan rutin supaya kerusakan yang sama tidak terulang.' },
+];
+const fmt = (t) => (t < 0 ? '−' + Math.abs(t) : String(t));
+---
+<Base>
+  <!-- Hero -->
+  <section class="wrap pt-10 pb-16 sm:pt-16 sm:pb-24 grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-center">
+    <div>
+      <p class="text-steel font-semibold">Maintenance dan service mesin pendingin, Jombang</p>
+      <h1 class="mt-4 text-[3.3rem] sm:text-[4.6rem] lg:text-[5.4rem]">Suhu stabil, produksi jalan terus.</h1>
+      <p class="mt-6 max-w-[34rem] text-[1.12rem] text-steel">
+        CV Fabian Teknik menangani instalasi, perawatan, dan perbaikan AC, water chiller, cold storage, dan mesin ice making untuk pabrik dan usaha di Jombang dan sekitarnya.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={waLink('Halo Fabian Teknik, saya ingin minta survei mesin pendingin.')} class="btn btn-wa" target="_blank" rel="noopener"><WaIcon />Minta survei lewat WhatsApp</a>
+        <a href="/layanan" class="btn btn-line">Lihat layanan</a>
+      </div>
+      <p class="mt-8 text-sm text-steel max-w-md">Kantor dan workshop di Plosoduwur, Glagahan, Perak. Fabrikasi rangka dan panel dikerjakan sendiri.</p>
+    </div>
+    <TempScale />
+  </section>
+
+  <!-- Mesin yang ditangani -->
+  <section class="bg-white border-y border-line">
+    <div class="wrap py-16 sm:py-20">
+      <div class="max-w-2xl">
+        <h2 class="text-[2.5rem] sm:text-[3.2rem]">Empat jenis mesin, satu tim teknisi.</h2>
+        <p class="mt-4 text-steel">Diurutkan dari suhu kerjanya. Semakin rendah suhunya, semakin besar kerugian kalau mesin berhenti, jadi semakin penting perawatan rutinnya.</p>
+      </div>
+      <ul class="mt-12 divide-y divide-line border-y border-line">
+        {machines.map((m) => (
+          <li>
+            <a href={`/layanan#${m.slug}`} class="group grid gap-x-8 gap-y-2 py-7 sm:grid-cols-[9rem_1fr_1.3fr] sm:items-baseline">
+              <span class="temp text-[2.8rem] leading-none text-ft">{fmt(m.temp)}°C</span>
+              <span>
+                <span class="block font-display font-extrabold [font-stretch:75%] text-[1.6rem] leading-tight group-hover:text-ft transition-colors">{m.name}</span>
+                <span class="block text-sm text-steel mt-1">{m.units}</span>
+              </span>
+              <span class="text-steel">{m.desc}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Jenis pekerjaan + industri -->
+  <section class="wrap py-16 sm:py-20 grid gap-14 lg:grid-cols-2">
+    <div>
+      <h2 class="text-[2.3rem] sm:text-[2.8rem]">Dari pasang baru sampai rawat rutin</h2>
+      <dl class="mt-8 space-y-6">
+        {work.map((w) => (
+          <div class="border-l-4 border-ft pl-5">
+            <dt class="font-bold text-[1.1rem]">{w.name}</dt>
+            <dd class="text-steel mt-1">{w.desc}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+    <div class="lg:pl-10 lg:border-l border-line">
+      <h2 class="text-[2.3rem] sm:text-[2.8rem]">Siapa yang kami layani</h2>
+      <p class="mt-4 text-steel max-w-md">Usaha yang tidak boleh kehilangan suhu dingin, karena barangnya bisa rusak atau produksinya berhenti.</p>
+      <ul class="mt-8 flex flex-wrap gap-2.5">
+        {industries.map((i) => (
+          <li class="px-4 py-2.5 bg-white border border-line rounded-full font-semibold text-[.95rem]">{i}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Alur kerja -->
+  <section class="bg-night text-ice">
+    <div class="wrap py-16 sm:py-20">
+      <h2 class="text-white text-[2.5rem] sm:text-[3.2rem] max-w-2xl">Begini cara kami bekerja</h2>
+      <ol class="mt-12 grid gap-px bg-white/10 sm:grid-cols-2 lg:grid-cols-5 rounded-md overflow-hidden">
+        {steps.map((s, i) => (
+          <li class="bg-night p-6">
+            <span class="temp text-signal text-[2.4rem] leading-none">{i + 1}</span>
+            <h3 class="text-white text-[1.35rem] mt-3 [font-stretch:80%]">{s.t}</h3>
+            <p class="mt-2 text-[.95rem] text-ice/70">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>

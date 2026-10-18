@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import WaIcon from '../components/WaIcon.astro';
+import { machines, work, waLink } from '../data/site.js';
+const fmt = (t) => (t < 0 ? '−' + Math.abs(t) : String(t));
+---
+<Base title="Layanan" description="Layanan instalasi, perawatan berkala, perbaikan, dan fabrikasi untuk AC, water chiller, mesin ice making, dan cold storage di Jombang dan sekitarnya.">
+  <PageHead title="Layanan mesin pendingin untuk usaha dan industri" lead="Kami menangani mesin dari suhu ruang kantor sampai ruang beku. Pilih jenis mesinnya untuk melihat apa yang kami kerjakan dan tanda-tanda mesin perlu dicek.">
+    <nav class="mt-8 flex flex-wrap gap-2" aria-label="Jenis mesin">
+      {machines.map((m) => (
+        <a href={`#${m.slug}`} class="px-4 py-2 rounded-full border border-ink/20 hover:border-ft hover:text-ft font-semibold text-[.95rem]">{m.name}</a>
+      ))}
+    </nav>
+  </PageHead>
+
+  {machines.map((m, i) => (
+    <section id={m.slug} class:list={['scroll-mt-20', i % 2 ? 'bg-frost' : 'bg-white']}>
+      <div class="wrap py-14 sm:py-18 grid gap-10 lg:grid-cols-[14rem_1fr_1fr]">
+        <div>
+          <p class="temp text-[4.4rem] leading-none text-ft">{fmt(m.temp)}°C</p>
+          <p class="text-sm text-steel mt-2">Suhu kerja {m.range}</p>
+        </div>
+        <div>
+          <h2 class="text-[2.3rem] sm:text-[2.8rem]">{m.name}</h2>
+          <p class="mt-1 text-steel font-semibold">{m.units}</p>
+          <p class="mt-4 text-steel">{m.desc}</p>
+          <a href={waLink(`Halo Fabian Teknik, saya ingin konsultasi soal ${m.name.toLowerCase()}.`)} class="btn btn-wa mt-6" target="_blank" rel="noopener"><WaIcon />Konsultasi lewat WhatsApp</a>
+        </div>
+        <div class="bg-night text-ice rounded-md p-6 self-start">
+          <h3 class="text-white text-[1.3rem] [font-stretch:80%]">Sebaiknya segera dicek kalau</h3>
+          <ul class="mt-4 space-y-3">
+            {m.signs.map((s) => (
+              <li class="flex gap-3"><span class="mt-2.5 h-0.5 w-3 bg-signal shrink-0"></span><span>{s}</span></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="border-t border-line">
+    <div class="wrap py-16 sm:py-20">
+      <h2 class="text-[2.4rem] sm:text-[3rem] max-w-2xl">Untuk semua jenis mesin di atas</h2>
+      <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {work.map((w) => (
+          <div class="border-t-4 border-ft pt-5">
+            <h3 class="text-[1.45rem] [font-stretch:80%]">{w.name}</h3>
+            <p class="mt-2 text-steel">{w.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Belum yakin masalahnya di mana?" text="Kirim foto plat nama mesin dan video gejalanya. Kami bantu perkirakan penyebabnya sebelum survei." />
+</Base>

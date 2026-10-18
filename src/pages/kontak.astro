@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import WaIcon from '../components/WaIcon.astro';
+import { site, machines, waLink } from '../data/site.js';
+---
+<Base title="Kontak" description="Hubungi CV Fabian Teknik di Glagahan, Perak, Jombang lewat WhatsApp 0858-5030-8521 atau email.">
+  <PageHead title="Minta survei atau penawaran" lead="Isi data singkat di bawah. Pesan Anda langsung terbuka di WhatsApp, tinggal tekan kirim." />
+
+  <section class="wrap py-14 sm:py-18 grid gap-12 lg:grid-cols-[1.2fr_1fr]">
+    <form id="wa-form" class="bg-white border border-line rounded-lg p-6 sm:p-8 grid gap-5" novalidate>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <label class="grid gap-1.5">
+          <span class="font-semibold">Nama</span>
+          <input name="nama" required autocomplete="name" class="field" placeholder="Nama Anda" />
+        </label>
+        <label class="grid gap-1.5">
+          <span class="font-semibold">Perusahaan atau usaha</span>
+          <input name="usaha" autocomplete="organization" class="field" placeholder="Boleh dikosongkan" />
+        </label>
+      </div>
+      <fieldset>
+        <legend class="font-semibold mb-2">Jenis mesin</legend>
+        <div class="flex flex-wrap gap-2">
+          {machines.map((m, i) => (
+            <label class="chip">
+              <input type="radio" name="mesin" value={m.name} checked={i === 0} class="sr-only" />
+              <span>{m.name}</span>
+            </label>
+          ))}
+          <label class="chip"><input type="radio" name="mesin" value="Fabrikasi atau konstruksi" class="sr-only" /><span>Fabrikasi</span></label>
+        </div>
+      </fieldset>
+      <label class="grid gap-1.5">
+        <span class="font-semibold">Lokasi</span>
+        <input name="lokasi" class="field" placeholder="Contoh: Mojoagung, Jombang" />
+      </label>
+      <label class="grid gap-1.5">
+        <span class="font-semibold">Ceritakan kebutuhannya</span>
+        <textarea name="pesan" rows="4" class="field" placeholder="Contoh: cold storage 3x4 meter suhunya tidak bisa turun di bawah −10°C sejak kemarin."></textarea>
+      </label>
+      <p id="form-error" class="hidden text-[.95rem] text-red-700 font-semibold">Isi nama Anda dulu supaya teknisi kami tahu harus menyapa siapa.</p>
+      <button type="submit" class="btn btn-wa justify-center text-[1.05rem]"><WaIcon />Kirim lewat WhatsApp</button>
+    </form>
+
+    <div class="space-y-8">
+      <div>
+        <h2 class="text-[2rem] [font-stretch:78%]">Kontak langsung</h2>
+        <dl class="mt-5 space-y-4">
+          <div><dt class="text-sm text-steel">WhatsApp dan telepon</dt><dd><a href={waLink()} target="_blank" rel="noopener" class="font-bold text-[1.25rem] text-ft hover:underline underline-offset-4">{site.waDisplay}</a></dd></div>
+          <div><dt class="text-sm text-steel">Email</dt><dd><a href={`mailto:${site.email}`} class="font-semibold hover:underline underline-offset-4 break-all">{site.email}</a></dd></div>
+          <div><dt class="text-sm text-steel">Instagram</dt><dd><a href={`https://instagram.com/${site.instagram}`} target="_blank" rel="noopener" class="font-semibold hover:underline underline-offset-4">@{site.instagram}</a></dd></div>
+          <div><dt class="text-sm text-steel">Kantor dan workshop</dt><dd class="font-semibold">{site.address}</dd></div>
+        </dl>
+      </div>
+      <iframe
+        title="Peta lokasi CV Fabian Teknik di Glagahan, Perak, Jombang"
+        src="https://www.google.com/maps?q=Glagahan,+Perak,+Jombang,+Jawa+Timur&z=14&output=embed"
+        class="w-full aspect-[4/3] rounded-md border border-line bg-ice"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .field {
+    width: 100%; border: 1.5px solid var(--color-line); border-radius: 6px;
+    padding: .75rem .9rem; background: var(--color-frost); font: inherit;
+  }
+  .field:focus { outline: none; border-color: var(--color-ft); background: #fff; }
+  .chip span {
+    display: inline-block; padding: .55rem 1rem; border-radius: 999px; cursor: pointer;
+    border: 1.5px solid var(--color-line); font-weight: 600; font-size: .95rem;
+  }
+  .chip input:checked + span { background: var(--color-ft); border-color: var(--color-ft); color: #fff; }
+  .chip input:focus-visible + span { outline: 3px solid var(--color-signal); outline-offset: 2px; }
+</style>
+
+<script define:vars={{ wa: site.wa }}>
+  const form = document.getElementById('wa-form');
+  const err = document.getElementById('form-error');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const nama = (d.get('nama') || '').trim();
+    if (!nama) { err.classList.remove('hidden'); form.nama.focus(); return; }
+    err.classList.add('hidden');
+    const lines = [
+      'Halo Fabian Teknik, saya ingin minta survei atau penawaran.',
+      '',
+      `Nama: ${nama}`,
+      d.get('usaha') && `Usaha: ${d.get('usaha')}`,
+      `Mesin: ${d.get('mesin')}`,
+      d.get('lokasi') && `Lokasi: ${d.get('lokasi')}`,
+      d.get('pesan') && `Kebutuhan: ${d.get('pesan')}`,
+    ].filter((l) => l !== null && l !== undefined && l !== false);
+    window.open(`https://wa.me/${wa}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
+  });
+</script>

@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-frost: #EEF3F7;
+  --color-ice: #DCE7EF;
+  --color-line: #C3D2DD;
+  --color-ink: #15212C;
+  --color-steel: #4E6273;
+  --color-ft: #0B6FB8;
+  --color-ft-deep: #08568F;
+  --color-night: #0A2639;
+  --color-signal: #F2B300;
+  --font-display: "Archivo", system-ui, sans-serif;
+  --font-sans: "Public Sans", system-ui, sans-serif;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--color-frost);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-stretch: 72%;
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  :focus-visible { outline: 3px solid var(--color-signal); outline-offset: 3px; border-radius: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+}
+
+@layer components {
+  .wrap { width: 100%; max-width: 76rem; margin-inline: auto; padding-inline: 1rem; }
+  @media (min-width: 640px) { .wrap { padding-inline: 1.75rem; } }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: .6rem;
+    padding: .85rem 1.3rem; border-radius: 6px;
+    font-weight: 700; font-size: 1rem; line-height: 1.2;
+    transition: background-color .15s, color .15s, border-color .15s;
+  }
+  .btn-wa { background: var(--color-ft); color: #fff; }
+  .btn-wa:hover { background: var(--color-ft-deep); }
+  .btn-line { border: 1.5px solid var(--color-ink); color: var(--color-ink); }
+  .btn-line:hover { background: var(--color-ink); color: var(--color-frost); }
+  .btn-signal { background: var(--color-signal); color: var(--color-night); }
+  .btn-signal:hover { background: #ffc520; }
+
+  .temp { font-family: var(--font-display); font-stretch: 62%; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+  .photo-slot {
+    background:
+      repeating-linear-gradient(135deg, transparent 0 14px, rgb(11 111 184 / .07) 14px 15px),
+      var(--color-ice);
+    border: 1px dashed var(--color-line);
+  }
+}

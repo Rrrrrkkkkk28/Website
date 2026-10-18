@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+
+const projects = [
+  { title: 'Fabrikasi rangka dudukan unit', place: 'Workshop Glagahan, Perak', type: 'Fabrikasi dan konstruksi', note: 'Rangka besi untuk dudukan unit pendingin, dilas dan dirakit di workshop sebelum dipasang di lokasi.' },
+  { title: 'Kantor dan workshop CV Fabian Teknik', place: 'Plosoduwur, Glagahan, Perak', type: 'Fasilitas', note: 'Tempat kami menyiapkan komponen, merakit rangka, dan menyimpan peralatan servis.' },
+  { title: 'Perawatan water chiller', place: 'Lokasi klien', type: 'Perawatan berkala', note: 'Pembersihan kondensor, pengecekan tekanan, dan laporan kondisi mesin.' },
+  { title: 'Instalasi ruang cold storage', place: 'Lokasi klien', type: 'Instalasi', note: 'Pemasangan panel, pintu, evaporator, dan unit kondensor sampai suhu ruang tercapai.' },
+  { title: 'Perbaikan mesin es balok', place: 'Lokasi klien', type: 'Perbaikan dan overhaul', note: 'Penanganan kebocoran dan penyetelan ulang agar produksi es kembali normal.' },
+  { title: 'Instalasi AC kantor', place: 'Lokasi klien', type: 'Instalasi', note: 'Pemasangan unit split dan cassette lengkap dengan pemipaan dan kelistrikan.' },
+];
+---
+<Base title="Proyek" description="Dokumentasi pekerjaan CV Fabian Teknik: fabrikasi, instalasi, perawatan, dan perbaikan mesin pendingin.">
+  <PageHead title="Pekerjaan yang sudah kami tangani" lead="Setiap proyek dicatat dengan foto sebelum dan sesudah, supaya calon klien bisa melihat langsung cara kerja kami." />
+
+  <section class="wrap py-14 sm:py-18">
+    <div class="mb-10 rounded-md border border-signal/60 bg-signal/10 px-5 py-4 text-[.95rem] max-w-3xl">
+      Tampilan demo. Foto, nama klien, dan detail tiap proyek akan diisi dari dokumentasi CV Fabian Teknik.
+    </div>
+    <ul class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      {projects.map((p) => (
+        <li>
+          <div class="photo-slot aspect-[4/3] rounded-md flex items-end p-4">
+            <span class="text-sm text-steel bg-white/80 px-2.5 py-1 rounded">Foto proyek</span>
+          </div>
+          <p class="mt-4 text-sm font-semibold text-ft">{p.type}</p>
+          <h2 class="text-[1.6rem] mt-1 [font-stretch:78%]">{p.title}</h2>
+          <p class="text-sm text-steel mt-1">{p.place}</p>
+          <p class="mt-3 text-steel">{p.note}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <CtaBand title="Punya proyek serupa?" text="Ceritakan kebutuhan Anda. Kami siapkan survei dan penawaran tertulis." />
+</Base>

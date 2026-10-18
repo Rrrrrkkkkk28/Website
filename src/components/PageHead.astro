@@ -1,0 +1,10 @@
+---
+const { title, lead } = Astro.props;
+---
+<section class="border-b border-line">
+  <div class="wrap pt-12 pb-12 sm:pt-16 sm:pb-14">
+    <h1 class="text-[3rem] sm:text-[4.4rem] max-w-4xl">{title}</h1>
+    {lead && <p class="mt-5 max-w-2xl text-[1.12rem] text-steel">{lead}</p>}
+    <slot />
+  </div>
+</section>
