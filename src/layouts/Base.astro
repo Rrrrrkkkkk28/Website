@@ -4,14 +4,17 @@ import Logo from '../components/Logo.astro';
 import WaIcon from '../components/WaIcon.astro';
 import { site, waLink } from '../data/site.js';
 
-const { title, description = 'CV Fabian Teknik, Jombang. Instalasi, perawatan, dan perbaikan AC, water chiller, cold storage, dan mesin ice making untuk pabrik dan usaha di Jawa Timur.' } = Astro.props;
+const { title, noindex = false, description = 'CV Fabian Teknik, Jombang. Instalasi, perawatan, dan perbaikan AC, water chiller, cold storage, dan mesin ice making untuk pabrik dan usaha di Jawa Timur.' } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const nav = [
   { href: '/layanan', label: 'Layanan' },
+  { href: '/perawatan', label: 'Paket perawatan' },
+  { href: '/alat', label: 'Alat bantu' },
   { href: '/proyek', label: 'Proyek' },
   { href: '/tentang', label: 'Tentang' },
   { href: '/kontak', label: 'Kontak' },
 ];
+const isActive = (href) => path === href || path.startsWith(href + '/');
 const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | Spesialis Mesin Pendingin di Jombang`;
 ---
 <!doctype html>
@@ -21,6 +24,7 @@ const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | Spesialis 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{pageTitle}</title>
   <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
   <meta property="og:title" content={pageTitle} />
   <meta property="og:description" content={description} />
   <meta name="theme-color" content="#0A2639" />
@@ -51,13 +55,13 @@ const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | Spesialis 
           <span class="block text-[.72rem] text-steel mt-0.5">Jombang, sejak {site.since}</span>
         </span>
       </a>
-      <nav class="hidden md:flex items-center gap-7 text-[.95rem] font-semibold" aria-label="Menu utama">
+      <nav class="hidden lg:flex items-center gap-6 text-[.95rem] font-semibold" aria-label="Menu utama">
         {nav.map((n) => (
-          <a href={n.href} class:list={['py-1 border-b-2 transition-colors', path === n.href ? 'border-ft text-ft' : 'border-transparent hover:border-line']} aria-current={path === n.href ? 'page' : undefined}>{n.label}</a>
+          <a href={n.href} class:list={['py-1 border-b-2 transition-colors', isActive(n.href) ? 'border-ft text-ft' : 'border-transparent hover:border-line']} aria-current={isActive(n.href) ? 'page' : undefined}>{n.label}</a>
         ))}
       </nav>
       <a href={waLink()} class="btn btn-wa !py-2.5 !px-4 text-sm hidden sm:inline-flex" target="_blank" rel="noopener"><WaIcon size={18} />Chat WhatsApp</a>
-      <details class="md:hidden relative">
+      <details class="lg:hidden relative">
         <summary class="list-none cursor-pointer p-2 -mr-2 font-semibold text-sm flex items-center gap-2" aria-label="Buka menu">
           Menu
           <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="2"/></svg>

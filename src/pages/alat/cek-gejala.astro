@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import WaIcon from '../../components/WaIcon.astro';
+import { site, machines } from '../../data/site.js';
+import { symptoms, urgencyText } from '../../data/tools.js';
+---
+<Base title="Cek gejala kerusakan mesin pendingin" description="Pilih jenis mesin dan gejalanya untuk melihat kemungkinan penyebab kerusakan AC, water chiller, mesin es, dan cold storage.">
+  <PageHead title="Cek gejala kerusakan mesin" lead="Pilih jenis mesin, lalu centang gejala yang Anda lihat. Hasilnya bisa langsung dikirim ke teknisi kami, jadi mereka datang dengan peralatan dan suku cadang yang tepat." />
+
+  <section class="wrap py-12 sm:py-16 grid gap-8 lg:grid-cols-[1.15fr_1fr] items-start">
+    <form id="f-gejala" class="panel grid gap-6">
+      <fieldset>
+        <legend class="font-semibold mb-2">Jenis mesin</legend>
+        <div class="flex flex-wrap gap-2">
+          {machines.map((m, i) => (
+            <label class="chip"><input type="radio" name="mesin" value={m.slug} checked={i === 0} class="sr-only" /><span>{m.name}</span></label>
+          ))}
+        </div>
+      </fieldset>
+      {machines.map((m, i) => (
+        <fieldset data-group={m.slug} hidden={i !== 0}>
+          <legend class="font-semibold mb-2">Gejala yang terlihat pada {m.name.toLowerCase().replace('ac ', 'AC ')}</legend>
+          <div class="grid gap-2">
+            {symptoms[m.slug].map((g, j) => (
+              <label class="check"><input type="checkbox" name={m.slug} value={j} /><span>{g.s}</span></label>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+    </form>
+
+    <div class="lg:sticky lg:top-24">
+      <div id="empty" class="rounded-lg border-2 border-dashed border-line p-8 text-steel">
+        <p class="font-semibold text-ink text-[1.1rem]">Centang minimal satu gejala</p>
+        <p class="mt-2">Kemungkinan penyebab dan tingkat urgensinya akan muncul di sini.</p>
+      </div>
+      <div id="result" hidden class="bg-night text-ice rounded-lg p-6 sm:p-8" aria-live="polite">
+        <p class="text-sm text-ice/60">Tingkat urgensi</p>
+        <p class="flex items-center gap-3 mt-2">
+          <span id="u-dot" class="size-3.5 rounded-full shrink-0"></span>
+          <span id="u-label" class="font-display font-extrabold [font-stretch:75%] text-white text-[2.2rem] leading-none"></span>
+        </p>
+        <p id="u-desc" class="mt-3 text-ice/75"></p>
+        <h2 class="text-white text-[1.3rem] [font-stretch:80%] mt-6 pt-5 border-t border-white/10">Kemungkinan penyebab</h2>
+        <ul id="causes" class="mt-3 space-y-3"></ul>
+        <div id="tips" hidden class="mt-6 rounded-md bg-signal/15 border border-signal/50 p-4">
+          <p class="font-semibold text-white">Sambil menunggu teknisi</p>
+          <ul id="tip-list" class="mt-2 space-y-1.5 text-[.95rem]"></ul>
+        </div>
+        <a id="g-wa" href="#" target="_blank" rel="noopener" class="btn btn-signal mt-6"><WaIcon />Kirim hasil ke teknisi</a>
+      </div>
+      <p class="mt-4 text-sm text-steel">Hasil ini perkiraan berdasarkan gejala umum. Penyebab pastinya diketahui setelah teknisi memeriksa mesin.</p>
+    </div>
+  </section>
+</Base>
+
+<script define:vars={{ wa: site.wa, symptoms, urgencyText, names: Object.fromEntries(machines.map((m) => [m.slug, m.name])) }}>
+  const form = document.getElementById('f-gejala');
+  const $ = (id) => document.getElementById(id);
+  const colors = { 3: '#ef5b4c', 2: '#F2B300', 1: '#4ad295' };
+
+  function render() {
+    const mesin = form.querySelector('input[name="mesin"]:checked').value;
+    form.querySelectorAll('[data-group]').forEach((g) => { g.hidden = g.dataset.group !== mesin; });
+    const picked = [...form.querySelectorAll(`input[name="${mesin}"]:checked`)].map((c) => symptoms[mesin][Number(c.value)]);
+
+    $('empty').hidden = picked.length > 0;
+    $('result').hidden = picked.length === 0;
+    if (!picked.length) return;
+
+    const u = Math.max(...picked.map((p) => p.u));
+    $('u-dot').style.background = colors[u];
+    $('u-label').textContent = urgencyText[u].label;
+    $('u-desc').textContent = urgencyText[u].desc;
+
+    const ul = $('causes'); ul.replaceChildren();
+    [...picked].sort((a, b) => b.u - a.u).forEach((p) => {
+      const li = document.createElement('li');
+      li.className = 'flex gap-3';
+      li.innerHTML = `<span class="mt-2 size-2 rounded-full shrink-0" style="background:${colors[p.u]}"></span><span><span class="block text-white font-semibold"></span><span class="block text-[.95rem] text-ice/70"></span></span>`;
+      li.querySelector('.text-white').textContent = p.s;
+      li.querySelector('.text-ice\\/70').textContent = p.c;
+      ul.append(li);
+    });
+
+    const tips = picked.filter((p) => p.tip);
+    $('tips').hidden = tips.length === 0;
+    $('tip-list').replaceChildren(...tips.map((p) => Object.assign(document.createElement('li'), { textContent: p.tip })));
+
+    const msg = [
+      `Halo Fabian Teknik, mesin saya bermasalah.`,
+      ``,
+      `Mesin: ${names[mesin]}`,
+      `Gejala:`,
+      ...picked.map((p) => `- ${p.s}`),
+      ``,
+      `Urgensi menurut cek gejala: ${urgencyText[u].label}`,
+      `Mohon bantuan pengecekan.`,
+    ].join('\n');
+    $('g-wa').href = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+  }
+
+  form.addEventListener('change', render);
+  render();
+</script>

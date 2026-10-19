@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import WaIcon from '../components/WaIcon.astro';
+import { site, machines } from '../data/site.js';
+
+const plans = [
+  {
+    id: 'dasar', name: 'Dasar', freq: 'Kunjungan setiap 3 bulan',
+    fit: 'Untuk AC kantor, sekolah, dan toko yang menyala di jam kerja.',
+    items: ['Cuci unit indoor dan outdoor', 'Cek tekanan freon dan arus listrik', 'Laporan kondisi mesin setiap kunjungan'],
+  },
+  {
+    id: 'rutin', name: 'Rutin', freq: 'Kunjungan setiap bulan', pick: true,
+    fit: 'Untuk mesin produksi, chiller, mesin es, dan cold storage yang bekerja hampir 24 jam.',
+    items: ['Semua isi paket Dasar', 'Pembersihan kondensor dan evaporator', 'Cek defrost, sensor, dan kontrol', 'Laporan dengan foto dan catatan komponen yang mulai aus'],
+  },
+  {
+    id: 'prioritas', name: 'Prioritas', freq: 'Kunjungan bulanan dan panggilan diutamakan',
+    fit: 'Untuk usaha yang rugi besar kalau mesin berhenti sehari saja.',
+    items: ['Semua isi paket Rutin', 'Didahulukan saat ada kerusakan mendadak', 'Konsultasi lewat WhatsApp kapan saja', 'Rekomendasi tahunan penggantian komponen dan anggarannya'],
+  },
+];
+---
+<Base title="Paket kontrak perawatan" description="Paket kontrak perawatan AC, water chiller, mesin es, dan cold storage dari CV Fabian Teknik. Jadwal servis rutin dengan laporan kondisi mesin.">
+  <PageHead title="Kontrak perawatan, supaya mesin tidak tiba-tiba berhenti" lead="Biaya perbaikan kompresor yang rusak bisa berkali lipat dari biaya servis rutin setahun. Dengan kontrak perawatan, jadwal kunjungan sudah terencana dan kondisi mesin selalu tercatat." />
+
+  <section class="wrap py-14 sm:py-18">
+    <div class="demo-note max-w-3xl mb-10">Tampilan demo. Isi paket dan harga disesuaikan dengan ketentuan CV Fabian Teknik.</div>
+    <div class="grid gap-6 lg:grid-cols-3 items-stretch">
+      {plans.map((p) => (
+        <article class:list={['rounded-lg p-6 sm:p-7 flex flex-col', p.pick ? 'bg-night text-ice ring-2 ring-ft' : 'bg-white border border-line']}>
+          {p.pick && <p class="self-start rounded-full bg-signal text-night text-sm font-bold px-3 py-1 mb-4">Paling sering dipilih pabrik</p>}
+          <h2 class:list={['text-[2.4rem]', p.pick && 'text-white']}>{p.name}</h2>
+          <p class:list={['font-semibold mt-1', p.pick ? 'text-signal' : 'text-ft']}>{p.freq}</p>
+          <p class:list={['mt-3', p.pick ? 'text-ice/75' : 'text-steel']}>{p.fit}</p>
+          <ul class:list={['mt-6 pt-6 space-y-3 flex-1 border-t', p.pick ? 'border-white/10' : 'border-line']}>
+            {p.items.map((it) => (
+              <li class="flex gap-3">
+                <svg class="mt-1 shrink-0" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke={p.pick ? '#F2B300' : '#0B6FB8'} stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>{it}</span>
+              </li>
+            ))}
+          </ul>
+          <p class:list={['mt-6 text-sm', p.pick ? 'text-ice/60' : 'text-steel']}>Harga dihitung per unit sesuai jenis dan kapasitas mesin.</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="bg-white border-y border-line">
+    <div class="wrap py-14 sm:py-18 grid gap-10 lg:grid-cols-[1fr_1.2fr] items-start">
+      <div>
+        <h2 class="text-[2.4rem] sm:text-[3rem]">Minta penawaran kontrak</h2>
+        <p class="mt-4 text-steel max-w-md">Isi jumlah mesin yang ingin dirawat. Kami kirim rincian harga per bulan lewat WhatsApp, biasanya di hari yang sama.</p>
+      </div>
+      <form id="f-kontrak" class="panel bg-frost grid gap-6">
+        <fieldset>
+          <legend class="font-semibold mb-2">Paket</legend>
+          <div class="flex flex-wrap gap-2">
+            {plans.map((p) => <label class="chip"><input type="radio" name="paket" value={p.name} checked={p.pick} class="sr-only" /><span>{p.name}</span></label>)}
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend class="font-semibold mb-3">Jumlah unit</legend>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {machines.map((m) => (
+              <label class="flex items-center justify-between gap-3 bg-white border border-line rounded-md px-4 py-2.5">
+                <span class="font-semibold text-[.95rem]">{m.name}</span>
+                <input type="number" name={m.slug} data-name={m.name} min="0" step="1" value="0" inputmode="numeric" class="field !w-20 !py-1.5 text-center" />
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <label class="grid gap-1.5"><span class="font-semibold">Nama usaha dan lokasi</span><input name="usaha" class="field !bg-white" placeholder="Contoh: Pabrik es Sumber Rejeki, Ploso" /></label>
+        <p id="k-err" hidden class="text-[.95rem] text-red-700 font-semibold">Isi jumlah minimal satu unit mesin.</p>
+        <button class="btn btn-wa justify-center"><WaIcon />Kirim permintaan penawaran</button>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script define:vars={{ wa: site.wa }}>
+  const f = document.getElementById('f-kontrak');
+  f.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const units = [...f.querySelectorAll('input[type="number"]')].map((i) => [i.dataset.name, Math.max(0, parseInt(i.value, 10) || 0)]).filter(([, n]) => n > 0);
+    const err = document.getElementById('k-err');
+    err.hidden = units.length > 0;
+    if (!units.length) return;
+    const msg = [
+      'Halo Fabian Teknik, saya ingin penawaran kontrak perawatan.',
+      '',
+      `Paket: ${f.paket.value}`,
+      ...units.map(([n, q]) => `- ${n}: ${q} unit`),
+      f.usaha.value.trim() ? `Usaha/lokasi: ${f.usaha.value.trim()}` : null,
+    ].filter((l) => l !== null).join('\n');
+    window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+  });
+</script>

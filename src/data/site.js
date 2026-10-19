@@ -67,3 +67,9 @@ export const industries = [
   'Supermarket dan gudang distribusi',
   'Kantor, sekolah, dan pesantren',
 ];
+
+export const tools = [
+  { href: '/alat/kalkulator', mark: 'PK', name: 'Kalkulator kebutuhan mesin', desc: 'Perkiraan PK AC untuk ruangan Anda, atau kapasitas pendingin dan tebal panel untuk cold storage.', cta: 'Hitung sekarang' },
+  { href: '/alat/cek-gejala', mark: '?', name: 'Cek gejala kerusakan', desc: 'Pilih jenis mesin dan gejalanya. Anda akan melihat kemungkinan penyebab dan seberapa mendesak harus ditangani.', cta: 'Cek mesin saya' },
+  { href: '/alat/jadwal-servis', mark: '30', name: 'Pengingat jadwal servis', desc: 'Masukkan tanggal servis terakhir. Kami hitung jadwal berikutnya dan simpan ke kalender HP Anda.', cta: 'Atur pengingat' },
+];

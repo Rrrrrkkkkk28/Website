@@ -1,0 +1,110 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import WaIcon from '../../components/WaIcon.astro';
+import { site, machines } from '../../data/site.js';
+import { intervals } from '../../data/tools.js';
+---
+<Base title="Pengingat jadwal servis mesin pendingin" description="Hitung jadwal servis berikutnya untuk AC, water chiller, mesin es, dan cold storage, lalu simpan pengingatnya ke kalender HP.">
+  <PageHead title="Pengingat jadwal servis" lead="Mesin yang dirawat tepat waktu lebih awet dan lebih hemat listrik. Masukkan tanggal servis terakhir, lalu simpan pengingatnya ke kalender HP Anda." />
+
+  <section class="wrap py-12 sm:py-16 grid gap-8 lg:grid-cols-[1.1fr_1fr] items-start">
+    <form id="f-jadwal" class="panel grid gap-6">
+      <fieldset>
+        <legend class="font-semibold mb-2">Jenis mesin</legend>
+        <div class="flex flex-wrap gap-2">
+          {machines.map((m, i) => (
+            <label class="chip"><input type="radio" name="mesin" value={m.slug} checked={i === 0} class="sr-only" /><span>{m.name}</span></label>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend class="font-semibold mb-2">Pemakaian mesin</legend>
+        <div class="grid gap-2">
+          <label class="check"><input type="radio" name="pakai" value="ringan" checked /><span><span class="font-semibold block">Jam kerja saja</span><span class="text-sm text-steel">Menyala sekitar 8 sampai 10 jam sehari</span></span></label>
+          <label class="check"><input type="radio" name="pakai" value="berat" /><span><span class="font-semibold block">Hampir 24 jam atau lingkungan berdebu</span><span class="text-sm text-steel">Ruang produksi, dapur, pabrik, atau mesin yang tidak pernah mati</span></span></label>
+        </div>
+      </fieldset>
+      <label class="grid gap-1.5 max-w-xs">
+        <span class="font-semibold">Tanggal servis terakhir</span>
+        <input id="last" type="date" class="field" required />
+      </label>
+      <label class="grid gap-1.5">
+        <span class="font-semibold">Nama atau lokasi mesin <span class="font-normal text-steel">(boleh dikosongkan)</span></span>
+        <input id="label" class="field" placeholder="Contoh: Cold storage gudang belakang" />
+      </label>
+    </form>
+
+    <div class="bg-night text-ice rounded-lg p-6 sm:p-8" aria-live="polite">
+      <p class="text-sm text-ice/60">Servis berikutnya</p>
+      <p id="next" class="font-display font-extrabold [font-stretch:75%] text-white text-[2.6rem] sm:text-[3rem] leading-none mt-2"></p>
+      <p class="mt-3 text-ice/80"><span id="every"></span></p>
+      <p id="status" class="mt-5 rounded-md px-4 py-3 font-semibold"></p>
+      <div class="mt-6 flex flex-col sm:flex-row flex-wrap gap-2">
+        <a id="gcal" href="#" target="_blank" rel="noopener" class="btn btn-signal justify-center">Simpan ke Google Calendar</a>
+        <button id="ics" type="button" class="btn justify-center border-[1.5px] border-ice/40 text-white hover:bg-white/10">Unduh untuk iPhone atau Outlook</button>
+      </div>
+      <a id="j-wa" href="#" target="_blank" rel="noopener" class="mt-5 inline-flex items-center gap-2 font-semibold text-white underline underline-offset-4"><WaIcon size={18} />Pesan jadwal servis sekarang</a>
+    </div>
+  </section>
+</Base>
+
+<script define:vars={{ wa: site.wa, intervals, names: Object.fromEntries(machines.map((m) => [m.slug, m.name])) }}>
+  const form = document.getElementById('f-jadwal');
+  const $ = (id) => document.getElementById(id);
+  const last = $('last');
+  const toISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const compact = (d) => toISO(d).replaceAll('-', '');
+  const longDate = (d) => d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const def = new Date(today); def.setDate(def.getDate() - 45);
+  last.value = toISO(def);
+  last.max = toISO(today);
+
+  let current = null;
+
+  function render() {
+    const mesin = form.querySelector('input[name="mesin"]:checked').value;
+    const pakai = form.querySelector('input[name="pakai"]:checked').value;
+    const days = intervals[mesin][pakai];
+    const base = last.value ? new Date(last.value + 'T00:00:00') : today;
+    const next = new Date(base); next.setDate(next.getDate() + days);
+    const diff = Math.round((next - today) / 86400000);
+    const label = $('label').value.trim();
+    const title = `Servis ${names[mesin]}${label ? ` (${label})` : ''}`;
+
+    $('next').textContent = longDate(next);
+    $('every').textContent = `Disarankan setiap ${days >= 60 ? days / 30 + ' bulan' : days === 30 ? '1 bulan' : days + ' hari'} untuk pemakaian ini.`;
+    const st = $('status');
+    if (diff < 0) { st.textContent = `Sudah lewat ${-diff} hari. Sebaiknya segera dijadwalkan.`; st.style.cssText = 'background:rgb(239 91 76 / .18);color:#ffd1cc'; }
+    else if (diff <= 14) { st.textContent = `Tinggal ${diff} hari lagi.`; st.style.cssText = 'background:rgb(242 179 0 / .18);color:#ffe7a3'; }
+    else { st.textContent = `Masih ${diff} hari lagi.`; st.style.cssText = 'background:rgb(74 210 149 / .15);color:#bff2da'; }
+
+    const details = `Jadwal servis rutin ${names[mesin]}.\nHubungi CV Fabian Teknik: wa.me/${wa}`;
+    const end = new Date(next); end.setDate(end.getDate() + 1);
+    $('gcal').href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${compact(next)}/${compact(end)}&details=${encodeURIComponent(details)}`;
+    $('j-wa').href = `https://wa.me/${wa}?text=${encodeURIComponent(`Halo Fabian Teknik, saya ingin pesan jadwal servis.\n\nMesin: ${names[mesin]}${label ? `\nLokasi: ${label}` : ''}\nServis terakhir: ${longDate(base)}\nPerkiraan jadwal: ${longDate(next)}`)}`;
+    current = { title, details, next, end };
+  }
+
+  $('ics').addEventListener('click', () => {
+    if (!current) return;
+    const esc = (s) => s.replace(/[,;]/g, (m) => '\\' + m).replace(/\n/g, '\\n');
+    const ics = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//CV Fabian Teknik//Jadwal Servis//ID', 'BEGIN:VEVENT',
+      `UID:${Date.now()}@fabianteknik`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
+      `DTSTART;VALUE=DATE:${compact(current.next)}`, `DTEND;VALUE=DATE:${compact(current.end)}`,
+      `SUMMARY:${esc(current.title)}`, `DESCRIPTION:${esc(current.details)}`,
+      'BEGIN:VALARM', 'TRIGGER:-P3D', 'ACTION:DISPLAY', `DESCRIPTION:${esc(current.title)} 3 hari lagi`, 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR',
+    ].join('\r\n');
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })), download: 'jadwal-servis-fabian-teknik.ics' });
+    a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  form.addEventListener('input', render);
+  form.addEventListener('change', render);
+  form.addEventListener('submit', (e) => e.preventDefault());
+  render();
+</script>

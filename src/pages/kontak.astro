@@ -63,19 +63,6 @@ import { site, machines, waLink } from '../data/site.js';
   </section>
 </Base>
 
-<style>
-  .field {
-    width: 100%; border: 1.5px solid var(--color-line); border-radius: 6px;
-    padding: .75rem .9rem; background: var(--color-frost); font: inherit;
-  }
-  .field:focus { outline: none; border-color: var(--color-ft); background: #fff; }
-  .chip span {
-    display: inline-block; padding: .55rem 1rem; border-radius: 999px; cursor: pointer;
-    border: 1.5px solid var(--color-line); font-weight: 600; font-size: .95rem;
-  }
-  .chip input:checked + span { background: var(--color-ft); border-color: var(--color-ft); color: #fff; }
-  .chip input:focus-visible + span { outline: 3px solid var(--color-signal); outline-offset: 2px; }
-</style>
 
 <script define:vars={{ wa: site.wa }}>
   const form = document.getElementById('wa-form');

@@ -1,0 +1,113 @@
+---
+import Base from '../layouts/Base.astro';
+
+const packs = [
+  {
+    name: 'Basic', price: '1.950.000', days: '7 hari kerja', care: '150.000',
+    lead: 'Website company profile yang siap muncul di Google.',
+    items: [
+      'Website 5 halaman: Beranda, Layanan, Proyek, Tentang, Kontak',
+      'Domain fabianteknik.co.id selama 1 tahun',
+      'Hosting dan SSL (ikon gembok aman di browser)',
+      'Tombol WhatsApp dan form kontak yang langsung terkirim ke WA',
+      'SEO lokal untuk Jombang dan kota sekitarnya',
+      'Bonus: daftar Google Maps (Google Business Profile)',
+      'Bonus: email resmi @fabianteknik.co.id',
+    ],
+  },
+  {
+    name: 'Plus', price: '2.950.000', days: '10 hari kerja', care: '150.000', pick: true,
+    lead: 'Website yang ikut bekerja mencari dan mengikat klien.',
+    items: [
+      'Semua isi paket Basic',
+      { t: 'Kalkulator kebutuhan AC dan cold storage', href: '/alat/kalkulator' },
+      { t: 'Cek gejala kerusakan, hasilnya terkirim ke WA', href: '/alat/cek-gejala' },
+      { t: 'Halaman paket kontrak perawatan dan formnya', href: '/perawatan' },
+      { t: 'Pengingat jadwal servis ke kalender klien', href: '/alat/jadwal-servis' },
+    ],
+  },
+  {
+    name: 'Pro', price: '4.500.000', days: '14 hari kerja', care: '250.000',
+    lead: 'Sistem yang membuat klien sulit pindah ke vendor lain.',
+    items: [
+      'Semua isi paket Plus',
+      'QR Riwayat Mesin: setiap mesin klien punya halaman riwayat servis sendiri',
+      'Klien scan QR untuk melihat jadwal berikutnya dan melapor kerusakan',
+      'Desain stiker QR berlogo, siap cetak',
+      'Data diisi admin lewat Google Sheets, tanpa aplikasi tambahan',
+      'Pelatihan singkat untuk admin Fabian Teknik',
+    ],
+  },
+];
+---
+<Base title="Penawaran website dari Zira Digital" noindex>
+  <section class="border-b border-line">
+    <div class="wrap pt-12 pb-12 sm:pt-16 sm:pb-14">
+      <p class="text-steel font-semibold">Dari Zira Digital untuk CV Fabian Teknik</p>
+      <h1 class="mt-3 text-[3rem] sm:text-[4.4rem] max-w-4xl">Penawaran website dan sistem digital</h1>
+      <p class="mt-5 max-w-2xl text-[1.12rem] text-steel">Halaman yang sedang Bapak lihat adalah demo dari paket di bawah. Semua fitur paket Plus sudah bisa dicoba langsung di website ini.</p>
+    </div>
+  </section>
+
+  <section class="wrap py-14 sm:py-18">
+    <div class="grid gap-6 lg:grid-cols-3 items-stretch">
+      {packs.map((p) => (
+        <article class:list={['rounded-lg p-6 sm:p-7 flex flex-col', p.pick ? 'bg-night text-ice ring-2 ring-ft lg:-my-3' : 'bg-white border border-line']}>
+          {p.pick && <p class="self-start rounded-full bg-signal text-night text-sm font-bold px-3 py-1 mb-4">Paling disarankan</p>}
+          <h2 class:list={['text-[2.4rem]', p.pick && 'text-white']}>{p.name}</h2>
+          <p class:list={['mt-1', p.pick ? 'text-ice/75' : 'text-steel']}>{p.lead}</p>
+          <p class:list={['temp text-[3.4rem] leading-none mt-5', p.pick ? 'text-white' : 'text-ink']}><span class="text-[.45em] align-top mr-1">Rp</span>{p.price}</p>
+          <p class:list={['text-sm mt-2', p.pick ? 'text-ice/60' : 'text-steel']}>Sekali bayar. Selesai dalam {p.days}.</p>
+          <ul class:list={['mt-6 pt-6 space-y-3 flex-1 border-t', p.pick ? 'border-white/10' : 'border-line']}>
+            {p.items.map((it) => (
+              <li class="flex gap-3">
+                <svg class="mt-1 shrink-0" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke={p.pick ? '#F2B300' : '#0B6FB8'} stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {typeof it === 'string'
+                  ? <span>{it}</span>
+                  : <a href={it.href} class="underline decoration-1 underline-offset-4 hover:decoration-2">{it.t}</a>}
+              </li>
+            ))}
+          </ul>
+          <p class:list={['mt-6 pt-4 border-t text-[.95rem]', p.pick ? 'border-white/10 text-ice/75' : 'border-line text-steel']}>Perawatan opsional Rp{p.care} per bulan</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="bg-white border-y border-line">
+    <div class="wrap py-14 sm:py-18 grid gap-12 lg:grid-cols-2">
+      <div>
+        <h2 class="text-[2.2rem] sm:text-[2.6rem]">Isi biaya perawatan bulanan</h2>
+        <ul class="mt-6 space-y-3 text-steel">
+          <li class="border-l-4 border-ft pl-4">Update konten, foto, dan proyek baru kapan saja</li>
+          <li class="border-l-4 border-ft pl-4">Laporan jumlah pengunjung dan klik WhatsApp setiap bulan</li>
+          <li class="border-l-4 border-ft pl-4">Perbaikan kalau ada bagian website yang bermasalah</li>
+          <li class="border-l-4 border-ft pl-4">Paket Pro: pengelolaan data QR Riwayat Mesin</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="text-[2.2rem] sm:text-[2.6rem]">Ketentuan</h2>
+        <ul class="mt-6 space-y-3 text-steel">
+          <li class="border-l-4 border-signal pl-4">DP 50% saat sepakat, pelunasan saat website online</li>
+          <li class="border-l-4 border-signal pl-4">Harga di atas adalah harga perkenalan, dengan syarat website boleh ditampilkan sebagai portofolio Zira Digital dan Bapak bersedia memberi testimoni</li>
+          <li class="border-l-4 border-signal pl-4">Perpanjangan domain mulai tahun kedua sekitar Rp300.000 per tahun</li>
+          <li class="border-l-4 border-signal pl-4">Pendaftaran domain .co.id memerlukan dokumen CV (akta atau NIB)</li>
+          <li class="border-l-4 border-signal pl-4">Biaya cetak stiker QR di luar paket</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-ft text-white">
+    <div class="wrap py-14 sm:py-16 grid gap-6 md:grid-cols-[1.5fr_auto] md:items-end">
+      <div>
+        <h2 class="text-white text-[2.4rem] sm:text-[3rem]">Siap mulai minggu ini</h2>
+        <p class="mt-3 max-w-xl text-white/85">Pilih paketnya, siapkan logo, foto proyek, dan dokumen CV. Website online dalam hitungan hari.</p>
+      </div>
+      <div class="flex flex-col gap-1.5 md:items-end">
+        <a href="mailto:halo@ziradigital.id?subject=Website%20CV%20Fabian%20Teknik" class="btn btn-signal">Email halo@ziradigital.id</a>
+        <a href="https://instagram.com/ziradigital_id" target="_blank" rel="noopener" class="text-sm underline underline-offset-4 text-white/85 hover:text-white">Instagram @ziradigital_id</a>
+      </div>
+    </div>
+  </section>
+</Base>

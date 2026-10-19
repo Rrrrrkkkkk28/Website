@@ -33,6 +33,7 @@
     text-wrap: balance;
   }
   p { text-wrap: pretty; }
+  [hidden] { display: none !important; }
   :focus-visible { outline: 3px solid var(--color-signal); outline-offset: 3px; border-radius: 2px; }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -65,4 +66,22 @@
       var(--color-ice);
     border: 1px dashed var(--color-line);
   }
+
+  .field {
+    width: 100%; border: 1.5px solid var(--color-line); border-radius: 6px;
+    padding: .75rem .9rem; background: var(--color-frost); font: inherit; color: var(--color-ink);
+  }
+  .field:focus { outline: none; border-color: var(--color-ft); background: #fff; }
+  .chip span {
+    display: inline-block; padding: .55rem 1rem; border-radius: 999px; cursor: pointer;
+    border: 1.5px solid var(--color-line); font-weight: 600; font-size: .95rem; background: #fff;
+  }
+  .chip input:checked + span { background: var(--color-ft); border-color: var(--color-ft); color: #fff; }
+  .chip input:focus-visible + span { outline: 3px solid var(--color-signal); outline-offset: 2px; }
+  .check { display: flex; gap: .75rem; align-items: flex-start; padding: .8rem 1rem; border: 1.5px solid var(--color-line); border-radius: 6px; background: #fff; cursor: pointer; }
+  .check:has(input:checked) { border-color: var(--color-ft); background: rgb(11 111 184 / .06); }
+  .check input { margin-top: .3rem; accent-color: var(--color-ft); width: 1.05rem; height: 1.05rem; flex-shrink: 0; }
+  .panel { background: #fff; border: 1px solid var(--color-line); border-radius: 10px; padding: 1.5rem; }
+  @media (min-width: 640px) { .panel { padding: 2rem; } }
+  .demo-note { border: 1px solid rgb(242 179 0 / .6); background: rgb(242 179 0 / .1); border-radius: 6px; padding: 1rem 1.25rem; font-size: .95rem; }
 }

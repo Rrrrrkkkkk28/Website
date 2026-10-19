@@ -1,0 +1,22 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { tools } from '../../data/site.js';
+---
+<Base title="Alat bantu" description="Alat bantu gratis dari CV Fabian Teknik: kalkulator kebutuhan AC dan cold storage, cek gejala kerusakan mesin, dan pengingat jadwal servis.">
+  <PageHead title="Alat bantu untuk pemilik mesin pendingin" lead="Gratis dipakai. Hitung kebutuhan mesin, cari tahu penyebab kerusakan, dan atur jadwal servis sebelum menghubungi teknisi." />
+  <section class="wrap py-14 sm:py-18">
+    <ul class="grid gap-6 md:grid-cols-3">
+      {tools.map((t) => (
+        <li>
+          <a href={t.href} class="panel h-full flex flex-col hover:border-ft transition-colors group">
+            <span class="temp text-ft text-[2.6rem] leading-none" aria-hidden="true">{t.mark}</span>
+            <h2 class="mt-4 text-[1.9rem] [font-stretch:78%] group-hover:text-ft transition-colors">{t.name}</h2>
+            <p class="mt-2 text-steel flex-1">{t.desc}</p>
+            <span class="mt-5 font-semibold text-ft underline underline-offset-4">{t.cta}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

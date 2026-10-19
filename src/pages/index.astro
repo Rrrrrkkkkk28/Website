@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import CycleDiagram from '../components/CycleDiagram.astro';
 import CtaBand from '../components/CtaBand.astro';
 import WaIcon from '../components/WaIcon.astro';
-import { machines, industries, work, waLink } from '../data/site.js';
+import { machines, industries, work, tools, waLink } from '../data/site.js';
 
 const steps = [
   { t: 'Ceritakan masalahnya', d: 'Lewat WhatsApp atau telepon. Kirim foto mesin, merek, dan gejala yang muncul.' },
@@ -75,6 +75,31 @@ const fmt = (t) => (t < 0 ? '−' + Math.abs(t) : String(t));
       <ul class="mt-8 flex flex-wrap gap-2.5">
         {industries.map((i) => (
           <li class="px-4 py-2.5 bg-white border border-line rounded-full font-semibold text-[.95rem]">{i}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Alat bantu -->
+  <section class="bg-white border-y border-line">
+    <div class="wrap py-16 sm:py-20">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div class="max-w-2xl">
+          <h2 class="text-[2.5rem] sm:text-[3.2rem]">Cek dulu sebelum memanggil teknisi</h2>
+          <p class="mt-4 text-steel">Alat bantu gratis untuk menghitung kebutuhan mesin, mengenali gejala kerusakan, dan mengingat jadwal servis.</p>
+        </div>
+        <a href="/perawatan" class="btn btn-line self-start md:self-auto">Lihat paket perawatan</a>
+      </div>
+      <ul class="mt-10 grid gap-6 md:grid-cols-3">
+        {tools.map((t) => (
+          <li>
+            <a href={t.href} class="block h-full rounded-lg border border-line bg-frost p-6 hover:border-ft transition-colors group">
+              <span class="temp text-ft text-[2.4rem] leading-none" aria-hidden="true">{t.mark}</span>
+              <h3 class="mt-3 text-[1.7rem] [font-stretch:78%] group-hover:text-ft transition-colors">{t.name}</h3>
+              <p class="mt-2 text-steel">{t.desc}</p>
+              <span class="mt-4 inline-block font-semibold text-ft underline underline-offset-4">{t.cta}</span>
+            </a>
+          </li>
         ))}
       </ul>
     </div>
