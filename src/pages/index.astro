@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import TempScale from '../components/TempScale.astro';
+import CycleDiagram from '../components/CycleDiagram.astro';
 import CtaBand from '../components/CtaBand.astro';
 import WaIcon from '../components/WaIcon.astro';
 import { machines, industries, work, waLink } from '../data/site.js';
@@ -29,7 +29,7 @@ const fmt = (t) => (t < 0 ? '−' + Math.abs(t) : String(t));
       </div>
       <p class="mt-8 text-sm text-steel max-w-md">Kantor dan workshop di Plosoduwur, Glagahan, Perak. Fabrikasi rangka dan panel dikerjakan sendiri.</p>
     </div>
-    <TempScale />
+    <CycleDiagram />
   </section>
 
   <!-- Mesin yang ditangani -->
